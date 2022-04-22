@@ -1,0 +1,78 @@
+<br/><br/><br/><br/><br/>
+<h1 align="center" class="display-4 mb-5">Orders</h1>
+
+
+<section class="mb-4" style="margin: 20px 20px 0 0" *ngIf="!currentUser || currentUser.role != Role.Customer" >
+
+  <div class="check" style="margin-left: 640px" >
+    <input style="margin: 5px 10px 0 0 " type="radio" (click)="update()" class="form-check-input" id="all"  name="materialExampleRadios">
+    <label style="margin: 0 20px" class="form-check-label small text-uppercase card-link-secondary" for="all" >All orders</label>
+
+    <input  style="margin: 5px 10px 0 0 " type="radio" (click)="pageoder1()" class="form-check-input"  id="1" name="materialExampleRadios">
+    <label  style="margin: 0 20px" class="form-check-label small text-uppercase card-link-secondary" for="1" >Finished order</label>
+
+    <input style="margin: 5px 10px 0 0 " type="radio" (click)="pageoder2()" class="form-check-input" id="2" name="materialExampleRadios">
+    <label style="margin: 0 20px" class="form-check-label small text-uppercase card-link-secondary" for="2" >Cenceled order</label>
+
+    <input style="margin: 5px 10px 0 0 " type="radio" (click)="pageoder3()" class="form-check-input" id="3"  name="materialExampleRadios">
+    <label style="margin: 0 20px" class="form-check-label small text-uppercase card-link-secondary" for="3" >Approved order</label>
+
+    <input style="margin: 5px 10px 0 0 " type="radio" (click)="pageoder0()" class="form-check-input" id="0" name="materialExampleRadios">
+    <label style="margin: 0 20px"  class="form-check-label small text-uppercase card-link-secondary" for="0" >New orders</label>
+  </div>
+
+</section>
+<table class="table table-striped text-center">
+    <thead>
+    <tr>
+        <th scope="col">Order #</th>
+        <th scope="col">Customer Name</th>
+        <th scope="col">Customer Email</th>
+        <th scope="col">Customer phone</th>
+        <th scope="col">Shipping Address</th>
+        <th scope="col">Total</th>
+        <th scope="col">Order Data</th>
+        <th scope="col">Status</th>
+        <th scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody >
+    <tr *ngFor="let order of page?.content">
+
+        <th class="align-middle" scope="row">
+            {{order.orderId}}
+        </th>
+        <td class="align-middle">{{order.buyerName}}</td>
+        <td class="align-middle">{{order.buyerEmail}}</td>
+        <td class="align-middle">{{order.buyerPhone}}</td>
+        <td class="align-middle">{{order.buyerAddress}}</td>
+        <td class="align-middle">{{order.orderAmount | currency}}</td>
+        <td class="align-middle">{{order.createTime | date}}</td>
+        <td class="align-middle">{{OrderStatus[order.orderStatus]}}</td>
+        <td class="align-middle">
+            <a *ngIf="!(currentUser.role == Role.Customer && currentUser.name == order.buyerEmail)"
+               style="display:
+            block" href="" routerLink="/order/{{order.orderId}}">
+                Show</a>
+
+
+            <a *ngIf="order.orderStatus == 0" style="display: block" (click)="cancel(order)" routerLink="./">Cancel</a>
+          <a *ngIf="currentUser.role != Role.Customer && order.orderStatus == 0"
+             style="display: block"
+             (click)="approved(order)"
+             routerLink="./">
+            Approved</a>
+
+
+            <a *ngIf="currentUser.role != Role.Customer && order.orderStatus == 3"
+               style="display: block"
+               (click)="finish(order)"
+               routerLink="./">
+                Finish</a>
+        </td>
+
+    </tr>
+    </tbody>
+</table>
+
+<app-pagination [currentPage]="page"></app-pagination>
